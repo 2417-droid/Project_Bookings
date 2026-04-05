@@ -64,27 +64,10 @@ function App() {
 
 function HomePage() {
   return (
-    <section className="hero" style={{ padding: '4rem 2rem', textAlign: 'center' }}>
+    <section className="hero hero-home" style={{ padding: '4rem 2rem', textAlign: 'center' }}>
       <h1>Your <span>Entertainment</span> Starts Here</h1>
       <p>Book movie tickets for the latest shows in your city</p>
       <Link to="/movies" className="btn btn-primary">Browse Movies</Link>
-
-      <div className="hero-search-shell" aria-label="Movie search and city auto-detect">
-        <div className="hero-search-input-wrap">
-          <span className="hero-search-icon" aria-hidden="true">🔎</span>
-          <input
-            className="hero-search-input"
-            type="text"
-            placeholder="Search movies, vibes, or theatres..."
-            aria-label="Search movies"
-          />
-        </div>
-
-        <button type="button" className="city-detect-pill" aria-label="Auto-detect City">
-          <span className="city-detect-icon" aria-hidden="true">📍</span>
-          <span>Auto-detect City</span>
-        </button>
-      </div>
     </section>
   );
 }
