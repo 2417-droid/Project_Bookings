@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.sharib</groupId>
-	<artifactId>BMS</artifactId>
+	<artifactId>bookmyshow</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name/>
-	<description/>
+	<name>BookMyShow</name>
+	<description>BookMyShow movie booking application</description>
 	<url/>
 	<licenses>
 		<license/>

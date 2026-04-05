@@ -1,18 +1,20 @@
 package com.sharib.BMS.service;
 
-import com.sharib.BMS.entity.City;
-import com.sharib.BMS.repository.CityRepository;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.sharib.BMS.entity.City;
+import com.sharib.BMS.repository.CityRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class CityService {
     private final CityRepository cityRepository;
 
-    private City addCity(City city)
+    public City addCity(City city)
     {
         return cityRepository.save(city);
     }

@@ -10,7 +10,7 @@ const apiDelete = (endpoint) => axios.delete(`${API_BASE}${endpoint}`).then(res 
 
 // Theatre APIs
 export const TheatreAPI = {
-    add: (data) => apiPost('/theatres', data),
+    add: (data) => apiPost('/theatres/addTheatre', data),
     getAll: () => apiGet('/theatres'),
     getById: (id) => apiGet(`/theatres/${id}`),
     getByCity: (cityId) => apiGet(`/theatres/city/${cityId}`)
@@ -30,7 +30,7 @@ export const MovieAPI = {
 
 // Screen APIs
 export const ScreenAPI = {
-    add: (data) => apiPost('/screens', data),
+    add: (data) => apiPost('/screens/addScreen', data),
     getAll: () => apiGet('/screens'),
     getById: (id) => apiGet(`/screens/${id}`),
     getByTheatre: (theatreId) => apiGet(`/screens/theatre/${theatreId}`)
@@ -45,7 +45,7 @@ export const CityAPI = {
 
 // Show APIs
 export const ShowAPI = {
-    add: (data) => apiPost('/shows', data),
+    add: (data) => apiPost('/shows/addShow', data),
     getAll: () => apiGet('/shows'),
     getById: (id) => apiGet(`/shows/${id}`),
     getByMovie: (movieId) => apiGet(`/shows/movie/${movieId}`),
@@ -54,7 +54,7 @@ export const ShowAPI = {
 
 // Seat APIs
 export const SeatAPI = {
-    add: (data) => apiPost('/seats', data),
+    add: (data) => apiPost('/seats/addSeat', data),
     getByScreen: (screenId) => apiGet(`/seats/screen/${screenId}`),
     getById: (id) => apiGet(`/seats/${id}`)
 };

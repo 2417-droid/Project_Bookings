@@ -1,14 +1,16 @@
 package com.sharib.BMS.service;
 
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.sharib.BMS.dto.ScreenRequest;
 import com.sharib.BMS.entity.Screen;
 import com.sharib.BMS.entity.Theatre;
 import com.sharib.BMS.repository.ScreenRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +25,7 @@ public class ScreenService {
                 .totalSeats(request.getTotalSeats())
                 .theatre(th)
                 .build();
-        return screen;
+        return screenRepository.save(screen);
     }
     public List<Screen> getAllScreen()
     {
