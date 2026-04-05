@@ -72,8 +72,8 @@ export default function BookingsPage() {
               className="card" 
               style={{
                 border: b.status === 'CANCELLED' 
-                  ? '1px solid rgba(233,69,96,0.3)' 
-                  : '1px solid rgba(46,204,113,0.3)'
+                  ? '1px solid rgba(255,0,122,0.35)' 
+                  : '1px solid rgba(34,197,94,0.35)'
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
@@ -99,8 +99,8 @@ export default function BookingsPage() {
                     className="badge"
                     style={{
                       background: b.status === 'CANCELLED' 
-                        ? 'rgba(233,69,96,0.2)' 
-                        : 'rgba(46,204,113,0.2)',
+                        ? 'rgba(255,0,122,0.2)' 
+                        : 'rgba(34,197,94,0.2)',
                       color: b.status === 'CANCELLED' ? 'var(--accent)' : 'var(--success)',
                       padding: '0.4rem 0.8rem',
                       borderRadius: '4px'

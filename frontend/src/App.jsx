@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import './style.css';
-import { CityAPI } from './api';
 import MoviesPage from './pages/MoviesPage';
 import TheatresPage from './pages/TheatresPage';
 import BookingsPage from './pages/BookingsPage';
@@ -11,30 +10,12 @@ import AdminPage from './pages/AdminPage';
 import MovieDetailPage from './pages/MovieDetailPage';
 
 function App() {
-  const [cities, setCities] = useState([]);
-  const [activeCity, setActiveCity] = useState('');
   const [user, setUser] = useState(null);
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem('user') || 'null');
     if (storedUser) setUser(storedUser);
-
-    const loadCities = async () => {
-      try {
-        const result = await CityAPI.getAll();
-        setCities(result);
-        if (result.length > 0) setActiveCity(result[0].name);
-      } catch (error) {
-        console.error('City load failed', error);
-      }
-    };
-
-    loadCities();
   }, []);
-
-  const handleCitySelect = (cityName) => {
-    setActiveCity(cityName);
-  };
 
   const logout = () => {
     localStorage.removeItem('user');
@@ -44,7 +25,7 @@ function App() {
   return (
     <Router>
       <nav className="navbar">
-        <Link to="/" className="logo">Book<span>My</span>Show</Link>
+        <Link to="/" className="logo">Vibe<span>Check</span></Link>
         <div className="nav-links">
           <Link to="/">Home</Link>
           <Link to="/movies">Movies</Link>
@@ -67,19 +48,6 @@ function App() {
         </div>
       </nav>
 
-      <div className="city-bar" id="city-bar">
-        <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem', fontWeight: '600' }}>📍 City:</span>
-        {cities.map((city, index) => (
-          <button
-            key={city.id}
-            className={`city-chip${activeCity === city.name ? ' active' : ''}`}
-            onClick={() => handleCitySelect(city.name)}
-          >
-            {city.name}
-          </button>
-        ))}
-      </div>
-
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/movies" element={<MoviesPage />} />
@@ -100,6 +68,23 @@ function HomePage() {
       <h1>Your <span>Entertainment</span> Starts Here</h1>
       <p>Book movie tickets for the latest shows in your city</p>
       <Link to="/movies" className="btn btn-primary">Browse Movies</Link>
+
+      <div className="hero-search-shell" aria-label="Movie search and city auto-detect">
+        <div className="hero-search-input-wrap">
+          <span className="hero-search-icon" aria-hidden="true">🔎</span>
+          <input
+            className="hero-search-input"
+            type="text"
+            placeholder="Search movies, vibes, or theatres..."
+            aria-label="Search movies"
+          />
+        </div>
+
+        <button type="button" className="city-detect-pill" aria-label="Auto-detect City">
+          <span className="city-detect-icon" aria-hidden="true">📍</span>
+          <span>Auto-detect City</span>
+        </button>
+      </div>
     </section>
   );
 }

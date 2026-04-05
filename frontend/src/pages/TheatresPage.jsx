@@ -6,6 +6,7 @@ export default function TheatresPage() {
   const [cities, setCities] = useState([]);
   const [selectedCity, setSelectedCity] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [toast, setToast] = useState(null);
 
   useEffect(() => {
     loadData();
@@ -47,20 +48,36 @@ export default function TheatresPage() {
   const viewScreens = async (theatreId, theatreName) => {
     try {
       const screens = await ScreenAPI.getByTheatre(theatreId);
+
       if (screens.length === 0) {
-        alert('No screens found');
+        setToast({ type: 'info', message: `${theatreName}: No screens found.` });
+        setTimeout(() => setToast(null), 3000);
         return;
       }
-      let msg = `${theatreName} Screens:\n`;
-      screens.forEach(s => msg += `\n• ${s.name} (${s.totalSeats || '?'} seats)`);
-      alert(msg);
+
+      const rows = screens
+        .map((screen) => `• ${screen.name} (${screen.totalSeats || '?'} seats)`)
+        .join('\n');
+
+      setToast({
+        type: 'info',
+        message: `${theatreName} Screens:\n${rows}`
+      });
+      setTimeout(() => setToast(null), 6000);
     } catch (e) {
-      alert('Could not load screens');
+      setToast({ type: 'error', message: 'Could not load screens.' });
+      setTimeout(() => setToast(null), 3000);
     }
   };
 
   return (
     <div className="container">
+      {toast && (
+        <div className="toast-container">
+          <div className={`toast toast-${toast.type}`}>{toast.message}</div>
+        </div>
+      )}
+
       <h2 className="section-title">Theatres</h2>
 
       <div className="city-bar" style={{ background: 'transparent', padding: '0', margin: '0 0 1.5rem 0', border: 'none' }}>

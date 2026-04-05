@@ -117,7 +117,7 @@ export default function MoviesPage() {
         ) : (
           filteredMovies.map(m => (
             <div key={m.id} className="card">
-              <div className="card-img" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '4rem', background: 'linear-gradient(135deg, #1a1a2e, #16213e)' }}>
+              <div className="card-img" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '4rem', background: 'linear-gradient(135deg, var(--bg-night), var(--bg-card))' }}>
                 <img 
                   src={m.posterUrl || 'https://via.placeholder.com/300x450?text=No+Poster'} 
                   alt={m.title} 

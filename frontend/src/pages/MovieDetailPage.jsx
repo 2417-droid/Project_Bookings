@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { MovieAPI, ShowAPI, ScreenAPI, SeatAPI, BookingAPI } from '../api';
 
@@ -47,6 +47,28 @@ export default function MovieDetailPage() {
     return null;
   };
 
+  const sortSeats = (seatList = []) => {
+    const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
+
+    return [...seatList].sort((a, b) => {
+      const rowA = (a?.row || '').toString().toUpperCase();
+      const rowB = (b?.row || '').toString().toUpperCase();
+      const rowCmp = collator.compare(rowA, rowB);
+      if (rowCmp !== 0) return rowCmp;
+
+      const colA = Number(a?.col);
+      const colB = Number(b?.col);
+      const hasColA = Number.isFinite(colA);
+      const hasColB = Number.isFinite(colB);
+      if (hasColA && hasColB && colA !== colB) return colA - colB;
+
+      const seatNumberCmp = collator.compare(a?.seatNumber || '', b?.seatNumber || '');
+      if (seatNumberCmp !== 0) return seatNumberCmp;
+
+      return Number(a?.id || 0) - Number(b?.id || 0);
+    });
+  };
+
   const openSeatModal = async (show) => {
     console.log('openSeatModal called with show:', show);
     setSelectedShow(show);
@@ -73,7 +95,8 @@ export default function MovieDetailPage() {
     try {
       const screenSeats = await SeatAPI.getByScreen(screenId);
       console.log('screenSeats for screenId', screenId, 'count:', screenSeats?.length, 'sample:', screenSeats?.slice(0, 5));
-      setSeats(screenSeats);
+      const sortedSeats = sortSeats(screenSeats || []);
+      setSeats(sortedSeats);
     
       // Get available seats and derive booked seat IDs from all seats.
       const availableSeats = await BookingAPI.getAvailableSeats(show.id);
@@ -100,6 +123,39 @@ export default function MovieDetailPage() {
       setSelectedSeats([...selectedSeats, seatId]);
     }
   };
+
+  const getSeatLabel = (seat) => seat.col ?? seat.seatNumber?.match(/\d+/)?.[0] ?? seat.id;
+
+  const seatLayout = useMemo(() => {
+    const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
+    const grouped = new Map();
+
+    seats.forEach((seat) => {
+      const rowKey = (seat?.row || 'NA').toString().toUpperCase();
+      if (!grouped.has(rowKey)) grouped.set(rowKey, []);
+      grouped.get(rowKey).push(seat);
+    });
+
+    const allCols = seats
+      .map((seat) => Number(seat?.col))
+      .filter((col) => Number.isFinite(col) && col > 0);
+    const globalMaxCol = allCols.length ? Math.max(...allCols) : 0;
+
+    const rows = [...grouped.entries()]
+      .sort(([rowA], [rowB]) => collator.compare(rowA, rowB))
+      .map(([rowLabel, rowSeats]) => {
+        const sortedRowSeats = sortSeats(rowSeats);
+        const byCol = new Map(
+          sortedRowSeats
+            .map((seat) => [Number(seat?.col), seat])
+            .filter(([col]) => Number.isFinite(col) && col > 0)
+        );
+
+        return { rowLabel, sortedRowSeats, byCol };
+      });
+
+    return { rows, globalMaxCol };
+  }, [seats]);
 
   const confirmBooking = async () => {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -182,7 +238,11 @@ export default function MovieDetailPage() {
             <div key={show.id} className="card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
               <div style={{ marginBottom: '1rem' }}>
                 <p style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.6)' }}>
-                  {show.theatre?.name || 'Theatre'} • {show.screen?.name || 'Screen'}
+                  {show.screen?.theatre?.name || show.theatre?.name || 'Theatre'}
+                  {' • '}
+                  {show.screen?.theatre?.city?.name || show.city?.name || 'City'}
+                  {' • '}
+                  {show.screen?.name || 'Screen'}
                 </p>
                 <p style={{ fontSize: '1.1rem', fontWeight: '600', color: 'var(--text)' }}>
                   {new Date(show.showDate).toLocaleDateString()} at {show.startTime}
@@ -213,29 +273,64 @@ export default function MovieDetailPage() {
             </p>
 
             {/* Seat Grid */}
-            <div style={{ maxHeight: '400px', overflowY: 'auto', marginBottom: '1.5rem', padding: '1rem', background: 'rgba(0,0,0,0.3)', borderRadius: '8px' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(8, 1fr)', gap: '0.5rem' }}>
-                {seats.map(seat => (
-                  <button
-                    key={seat.id}
-                    onClick={() => toggleSeat(seat.id)}
-                    disabled={bookedSeats.includes(seat.id)}
-                    style={{
-                      aspect: '1',
-                      borderRadius: '6px',
-                      border: selectedSeats.includes(seat.id) ? '2px solid var(--primary)' : '1px solid rgba(255,255,255,0.2)',
-                      background: bookedSeats.includes(seat.id) ? '#333' : selectedSeats.includes(seat.id) ? 'var(--primary)' : 'rgba(255,255,255,0.1)',
-                      color: 'var(--text)',
-                      cursor: bookedSeats.includes(seat.id) ? 'not-allowed' : 'pointer',
-                      opacity: bookedSeats.includes(seat.id) ? 0.5 : 1,
-                      fontSize: '0.75rem',
-                      fontWeight: '600',
-                      transition: 'all 0.2s'
-                    }}
-                    title={seat.seatNumber}
-                  >
-                    {seat.seatNumber?.split('-')[1] || seat.id}
-                  </button>
+            <div className="seat-grid-shell" style={{ maxHeight: '400px', overflowY: 'auto', marginBottom: '1.5rem' }}>
+              <div className="screen-label">Screen</div>
+              <div className="screen-indicator"></div>
+
+              <div className="seat-map" style={{ marginTop: '0.8rem' }}>
+                {seatLayout.rows.map((row) => (
+                  <div key={row.rowLabel} className="seat-row">
+                    <div className="seat-row-label">{row.rowLabel}</div>
+
+                    <div
+                      className="seat-row-grid"
+                      style={
+                        seatLayout.globalMaxCol > 0
+                          ? { gridTemplateColumns: `repeat(${seatLayout.globalMaxCol}, 36px)` }
+                          : undefined
+                      }
+                    >
+                      {seatLayout.globalMaxCol > 0
+                        ? Array.from({ length: seatLayout.globalMaxCol }, (_, idx) => {
+                            const colNumber = idx + 1;
+                            const seat = row.byCol.get(colNumber);
+                            if (!seat) {
+                              return <span key={`${row.rowLabel}-${colNumber}`} className="seat-empty" />;
+                            }
+
+                            const isBooked = bookedSeats.includes(seat.id);
+                            const isSelected = selectedSeats.includes(seat.id);
+
+                            return (
+                              <button
+                                key={seat.id}
+                                className={`seat ${isBooked ? 'booked' : isSelected ? 'selected' : 'available'}`}
+                                onClick={() => toggleSeat(seat.id)}
+                                disabled={isBooked}
+                                title={seat.seatNumber || `${row.rowLabel}${getSeatLabel(seat)}`}
+                              >
+                                {getSeatLabel(seat)}
+                              </button>
+                            );
+                          })
+                        : row.sortedRowSeats.map((seat) => {
+                            const isBooked = bookedSeats.includes(seat.id);
+                            const isSelected = selectedSeats.includes(seat.id);
+
+                            return (
+                              <button
+                                key={seat.id}
+                                className={`seat ${isBooked ? 'booked' : isSelected ? 'selected' : 'available'}`}
+                                onClick={() => toggleSeat(seat.id)}
+                                disabled={isBooked}
+                                title={seat.seatNumber || `${row.rowLabel}${getSeatLabel(seat)}`}
+                              >
+                                {getSeatLabel(seat)}
+                              </button>
+                            );
+                          })}
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>

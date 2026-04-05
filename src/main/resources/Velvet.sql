@@ -49,14 +49,14 @@ INSERT INTO theaters (name, address, city_id) VALUES ('SPI Palazzo', 'Vadapalani
 select * from theaters;
 
 
--- 5. Screens (theaterId references: 1=PVR Phoenix, 2=INOX Nariman, 3=PVR Select, 4=INOX Mantri, 5=AMB, 6=SPI)
-INSERT INTO screens (name, total_seats, theater_id) VALUES ('Screen 1', 10, 1);
-INSERT INTO screens (name, total_seats, theater_id) VALUES ('Screen 2', 8, 1);
-INSERT INTO screens (name, total_seats, theater_id) VALUES ('Audi 1', 10, 2);
-INSERT INTO screens (name, total_seats, theater_id) VALUES ('Screen 1', 10, 3);
-INSERT INTO screens (name, total_seats, theater_id) VALUES ('IMAX', 12, 4);
-INSERT INTO screens (name, total_seats, theater_id) VALUES ('Dolby Atmos', 10, 5);
-INSERT INTO screens (name, total_seats, theater_id) VALUES ('Screen 1', 8, 6);
+-- 5. Screens (theatre_id references: 1=PVR Phoenix, 2=INOX Nariman, 3=PVR Select, 4=INOX Mantri, 5=AMB, 7=SPI Palazzo)
+INSERT INTO screens (name, total_seats, theatre_id) VALUES ('Screen 1', 10, 1);
+INSERT INTO screens (name, total_seats, theatre_id) VALUES ('Screen 2', 8, 1);
+INSERT INTO screens (name, total_seats, theatre_id) VALUES ('Audi 1', 10, 2);
+INSERT INTO screens (name, total_seats, theatre_id) VALUES ('Screen 1', 10, 3);
+INSERT INTO screens (name, total_seats, theatre_id) VALUES ('IMAX', 12, 4);
+INSERT INTO screens (name, total_seats, theatre_id) VALUES ('Dolby Atmos', 10, 5);
+INSERT INTO screens (name, total_seats, theatre_id) VALUES ('Screen 1', 8, 7);
 
 -- 6. Seats for Screen 1 (id=1, PVR Phoenix Screen 1) — 10 seats
 INSERT INTO seats (seat_number, seat_row, seat_col, seat_type, screen_id) VALUES ('A1', 'A', 1, 'REGULAR', 1);
