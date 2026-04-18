@@ -40,7 +40,7 @@ This creates a `dist` folder with optimized production build.
 Set `VITE_API_BASE_URL` to your deployed backend API base. This project already includes:
 
 ```env
-VITE_API_BASE_URL=https://projectbookings-production-eae9.up.railway.app/api
+VITE_API_BASE_URL=https://projectbookings-production.up.railway.app/api
 ```
 
 If your frontend platform supports environment variables (Vercel, Netlify, etc.), add the same key there.
