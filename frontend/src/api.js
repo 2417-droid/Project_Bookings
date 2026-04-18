@@ -1,12 +1,14 @@
 import axios from 'axios';
 
-const API_BASE = '/api';
+const configuredBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim();
+const API_BASE = configuredBaseUrl ? configuredBaseUrl.replace(/\/+$/, '') : '/api';
+const http = axios.create({ baseURL: API_BASE });
 
 // Helper functions
-const apiGet = (endpoint) => axios.get(`${API_BASE}${endpoint}`).then(res => res.data);
-const apiPost = (endpoint, data) => axios.post(`${API_BASE}${endpoint}`, data).then(res => res.data);
-const apiPut = (endpoint, data) => axios.put(`${API_BASE}${endpoint}`, data).then(res => res.data);
-const apiDelete = (endpoint) => axios.delete(`${API_BASE}${endpoint}`).then(res => res.data);
+const apiGet = (endpoint) => http.get(endpoint).then(res => res.data);
+const apiPost = (endpoint, data) => http.post(endpoint, data).then(res => res.data);
+const apiPut = (endpoint, data) => http.put(endpoint, data).then(res => res.data);
+const apiDelete = (endpoint) => http.delete(endpoint).then(res => res.data);
 
 // Theatre APIs
 export const TheatreAPI = {
