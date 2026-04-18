@@ -2,17 +2,15 @@
 -- BookMyShow – Sample Seed Data
 -- =============================================
 
-#drop database bms;
-use bms;
+-- Uncomment if you want to recreate the database from scratch.
+-- DROP DATABASE vibecheck_db;
+USE railway;
 -- 1. Cities
 INSERT INTO cities (name, state) VALUES ('Mumbai', 'Maharashtra');
 INSERT INTO cities (name, state) VALUES ('Delhi', 'Delhi');
 INSERT INTO cities (name, state) VALUES ('Bangalore', 'Karnataka');
 INSERT INTO cities (name, state) VALUES ('Hyderabad', 'Telangana');
 INSERT INTO cities (name, state) VALUES ('Chennai', 'Tamil Nadu');
-
-
-select * from users;
 
 -- 2. Users
 INSERT INTO users (name, email, password, phone, created_at) VALUES ('Rahul Sharma', 'rahul@example.com', 'pass123', '9876543210', NOW());
@@ -36,18 +34,14 @@ VALUES ('Leo', 'A mild-mannered cafe owner hides a violent past', 'Thriller', 'T
 INSERT INTO movies (title, description, genre, language, duration_minutes, rating, release_date, poster_url)
 VALUES ('Dunki', 'The story of illegal immigration through donkey flight', 'Comedy', 'Hindi', 140, 6.8, '2025-12-21', 'https://upload.wikimedia.org/wikipedia/en/thumb/4/4f/Dunki_poster.jpg/250px-Dunki_poster.jpg');
 
--- 4. Theaters (cityId references: 1=Mumbai, 2=Delhi, 3=Bangalore, 4=Hyderabad, 5=Chennai)
-INSERT INTO theaters (name, address, city_id) VALUES ('PVR Phoenix', 'Lower Parel, Mumbai', 1);
-INSERT INTO theaters (name, address, city_id) VALUES ('INOX Nariman Point', 'Nariman Point, Mumbai', 1);
-INSERT INTO theaters (name, address, city_id) VALUES ('PVR Select City', 'Saket, New Delhi', 2);
-INSERT INTO theaters (name, address, city_id) VALUES ('GOLD Cinema', 'Rajiv Chowk, New Delhi', 2);
-INSERT INTO theaters (name, address, city_id) VALUES ('INOX Mantri Mall', 'Malleshwaram, Bangalore', 3);
-INSERT INTO theaters (name, address, city_id) VALUES ('AMB Cinemas', 'Gachibowli, Hyderabad', 4);
-INSERT INTO theaters (name, address, city_id) VALUES ('SPI Palazzo', 'Vadapalani, Chennai', 5);
-
-
-select * from theaters;
-
+-- 4. Theatres (cityId references: 1=Mumbai, 2=Delhi, 3=Bangalore, 4=Hyderabad, 5=Chennai)
+INSERT INTO theatres (name, address, city_id) VALUES ('PVR Phoenix', 'Lower Parel, Mumbai', 1);
+INSERT INTO theatres (name, address, city_id) VALUES ('INOX Nariman Point', 'Nariman Point, Mumbai', 1);
+INSERT INTO theatres (name, address, city_id) VALUES ('PVR Select City', 'Saket, New Delhi', 2);
+INSERT INTO theatres (name, address, city_id) VALUES ('GOLD Cinema', 'Rajiv Chowk, New Delhi', 2);
+INSERT INTO theatres (name, address, city_id) VALUES ('INOX Mantri Mall', 'Malleshwaram, Bangalore', 3);
+INSERT INTO theatres (name, address, city_id) VALUES ('AMB Cinemas', 'Gachibowli, Hyderabad', 4);
+INSERT INTO theatres (name, address, city_id) VALUES ('SPI Palazzo', 'Vadapalani, Chennai', 5);
 
 -- 5. Screens (theatre_id references: 1=PVR Phoenix, 2=INOX Nariman, 3=PVR Select, 4=INOX Mantri, 5=AMB, 7=SPI Palazzo)
 INSERT INTO screens (name, total_seats, theatre_id) VALUES ('Screen 1', 10, 1);
