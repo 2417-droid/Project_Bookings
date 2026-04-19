@@ -1,4 +1,4 @@
-# VibeCheck (BMS)
+# VibeCheck 
 
 A full-stack movie booking application built with Spring Boot (backend), MySQL (database), and React + Vite (frontend).
 
