@@ -35,8 +35,8 @@ public class SecurityConfig {
         http
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(List.of("vibecheck-puce.vercel.app", "http://localhost:5173")); // React
-                                                                                                             // App URLs
+                    config.setAllowedOrigins(List.of("https://vibecheck-puce.vercel.app", "http://localhost:5173")); // React
+                    // App URLs
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     config.setAllowedHeaders(List.of("*"));
                     config.setAllowCredentials(true); // Crucial for HttpOnly cookies
