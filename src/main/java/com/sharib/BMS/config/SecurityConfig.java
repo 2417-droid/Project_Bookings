@@ -35,16 +35,22 @@ public class SecurityConfig {
         http
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(List.of("https://vibecheck-puce.vercel.app", "http://localhost:5173")); // React
-                    // App URLs
+                    config.setAllowedOriginPatterns(List.of(
+                        "https://vibecheck-puce.vercel.app",
+                        "https://*.vercel.app",
+                        "http://localhost:5173",
+                        "http://localhost:3000"
+                    ));
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     config.setAllowedHeaders(List.of("*"));
-                    config.setAllowCredentials(true); // Crucial for HttpOnly cookies
+                    config.setExposedHeaders(List.of("Authorization", "Set-Cookie"));
+                    config.setAllowCredentials(true);
                     return config;
                 }))
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

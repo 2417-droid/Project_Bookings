@@ -43,13 +43,15 @@ public class AuthController {
         String accessToken = jwtUtils.generateAccessToken(email);
         String refreshToken = jwtUtils.generateRefreshToken(email);
 
-        Cookie refreshCookie = new Cookie("refreshToken", refreshToken);
-        refreshCookie.setHttpOnly(true);
-        refreshCookie.setSecure(true); // Should be true in production with HTTPS
-        refreshCookie.setPath("/api/auth/refresh");
-        refreshCookie.setMaxAge(7 * 24 * 60 * 60); // 7 days
+        org.springframework.http.ResponseCookie refreshCookie = org.springframework.http.ResponseCookie.from("refreshToken", refreshToken)
+                .httpOnly(true)
+                .secure(true)
+                .path("/api/auth/refresh")
+                .maxAge(7 * 24 * 60 * 60)
+                .sameSite("None")
+                .build();
         
-        response.addCookie(refreshCookie);
+        response.addHeader(org.springframework.http.HttpHeaders.SET_COOKIE, refreshCookie.toString());
 
         User user = userRepository.findByEmail(email).orElse(null);
         String name = (user != null && user.getName() != null) ? user.getName() : email;
@@ -89,12 +91,14 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletResponse response) {
-        Cookie refreshCookie = new Cookie("refreshToken", null);
-        refreshCookie.setHttpOnly(true);
-        refreshCookie.setSecure(true);
-        refreshCookie.setPath("/api/auth/refresh");
-        refreshCookie.setMaxAge(0);
-        response.addCookie(refreshCookie);
+        org.springframework.http.ResponseCookie refreshCookie = org.springframework.http.ResponseCookie.from("refreshToken", "")
+                .httpOnly(true)
+                .secure(true)
+                .path("/api/auth/refresh")
+                .maxAge(0)
+                .sameSite("None")
+                .build();
+        response.addHeader(org.springframework.http.HttpHeaders.SET_COOKIE, refreshCookie.toString());
         
         return ResponseEntity.ok("Logged out successfully");
     }
