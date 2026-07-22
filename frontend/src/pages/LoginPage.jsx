@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { UserAPI } from '../api';
 
-export default function LoginPage() {
+export default function LoginPage({ onLoginSuccess }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -19,6 +19,9 @@ export default function LoginPage() {
     try {
       const user = await UserAPI.login({ email, password });
       localStorage.setItem('user', JSON.stringify(user));
+      if (onLoginSuccess) {
+        onLoginSuccess(user);
+      }
       alert('Login successful!');
       navigate('/');
     } catch (e) {
@@ -31,74 +34,56 @@ export default function LoginPage() {
   };
 
   return (
-    <div style={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      minHeight: 'calc(100vh - 60px)',
-      padding: '2rem'
-    }}>
-      <div style={{
-        background: 'var(--bg-card)',
-        padding: '3rem',
-        borderRadius: 'var(--radius)',
-        border: '1px solid rgba(255,255,255,0.1)',
-        width: '100%',
-        maxWidth: '400px'
-      }}>
-        <h2 style={{ textAlign: 'center', marginBottom: '2rem' }}>Login</h2>
-        <form onSubmit={handleLogin}>
-          <div style={{ marginBottom: '1.5rem' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem' }}>Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              style={{
-                width: '100%',
-                padding: '0.8rem',
-                borderRadius: '8px',
-                border: '1px solid rgba(255,255,255,0.1)',
-                background: 'rgba(255,255,255,0.05)',
-                color: 'var(--text)',
-                fontSize: '1rem'
-              }}
-            />
-          </div>
+    <div className="auth-split-layout">
+      <div className="auth-split-image">
+        <img src="/auth-bg.png" alt="Cinema Background" />
+        <div className="auth-split-image-overlay">
+          <h2>Welcome Back.</h2>
+          <p>Book your favorite movies, manage your tickets, and experience the magic of cinema.</p>
+        </div>
+      </div>
 
-          <div style={{ marginBottom: '2rem' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem' }}>Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              style={{
-                width: '100%',
-                padding: '0.8rem',
-                borderRadius: '8px',
-                border: '1px solid rgba(255,255,255,0.1)',
-                background: 'rgba(255,255,255,0.05)',
-                color: 'var(--text)',
-                fontSize: '1rem'
-              }}
-            />
-          </div>
+      <div className="auth-form-container">
+        <div className="auth-glass-panel">
+          <h2 className="auth-title">Login</h2>
+          <p className="auth-subtitle">Enter your credentials to access your account</p>
+          
+          <form onSubmit={handleLogin}>
+            <div className="auth-input-wrapper">
+              <label>Email Address</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                required
+              />
+            </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="btn btn-primary"
-            style={{ width: '100%' }}
-          >
-            {loading ? 'Logging in...' : 'Login'}
-          </button>
-        </form>
+            <div className="auth-input-wrapper">
+              <label>Password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+              />
+            </div>
 
-        <p style={{ textAlign: 'center', marginTop: '1rem', color: 'var(--text-muted)' }}>
-          Don't have an account? <Link to="/register" style={{ color: 'var(--primary)' }}>Register</Link>
-        </p>
+            <button
+              type="submit"
+              disabled={loading}
+              className="auth-btn"
+            >
+              {loading ? 'Logging in...' : 'Sign In'}
+            </button>
+          </form>
+
+          <p className="auth-footer">
+            Don't have an account? <Link to="/register">Register here</Link>
+          </p>
+        </div>
       </div>
     </div>
   );

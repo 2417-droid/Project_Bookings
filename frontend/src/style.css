@@ -944,3 +944,184 @@ img { max-width: 100%; display: block; }
 @media (max-width: 480px) {
     .grid-3, .grid-4 { grid-template-columns: 1fr; }
 }
+
+/* ===== AUTH LAYOUT & SPLIT SCREEN ===== */
+.auth-split-layout {
+    display: flex;
+    min-height: calc(100vh - 65px);
+    width: 100%;
+    background: var(--bg-dark);
+}
+
+.auth-split-image {
+    flex: 1;
+    display: none;
+    position: relative;
+    overflow: hidden;
+}
+
+@media (min-width: 900px) {
+    .auth-split-image {
+        display: block;
+    }
+}
+
+.auth-split-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.8) contrast(1.1);
+}
+
+.auth-split-image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.4), rgba(255, 0, 122, 0.4));
+    mix-blend-mode: overlay;
+}
+
+.auth-split-image-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4rem;
+    background: linear-gradient(to right, rgba(15, 23, 42, 0.1), rgba(15, 23, 42, 0.95));
+    z-index: 10;
+}
+
+.auth-split-image-overlay h2 {
+    font-family: 'Sora', sans-serif;
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    color: var(--white);
+    text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    animation: fadeRise 1s ease both;
+}
+
+.auth-split-image-overlay p {
+    font-size: 1.2rem;
+    color: rgba(255,255,255,0.8);
+    max-width: 80%;
+    animation: fadeRise 1s ease both 0.2s;
+}
+
+.auth-form-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: var(--bg-night);
+    position: relative;
+}
+
+.auth-glass-panel {
+    width: 100%;
+    max-width: 440px;
+    background: rgba(30, 41, 59, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 3rem 2.5rem;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    animation: fadeRise 0.6s ease both;
+}
+
+.auth-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.auth-subtitle {
+    text-align: center;
+    color: var(--text-muted);
+    margin-bottom: 2.5rem;
+    font-size: 0.95rem;
+}
+
+.auth-input-wrapper {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.auth-input-wrapper label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+    transition: var(--transition);
+}
+
+.auth-input-wrapper input {
+    width: 100%;
+    padding: 1rem 1.2rem;
+    background: rgba(15, 23, 42, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    color: var(--white);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.auth-input-wrapper input:focus {
+    background: rgba(15, 23, 42, 0.8);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15);
+}
+
+.auth-btn {
+    width: 100%;
+    padding: 1rem;
+    border-radius: 12px;
+    border: none;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 20px rgba(139, 92, 246, 0.3);
+    margin-top: 1rem;
+}
+
+.auth-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 30px rgba(139, 92, 246, 0.5);
+    filter: brightness(1.1);
+}
+
+.auth-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 2rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.auth-footer a {
+    color: var(--primary);
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.auth-footer a:hover {
+    color: var(--secondary);
+    text-shadow: 0 0 10px rgba(255, 0, 122, 0.4);
+}

@@ -1,6 +1,5 @@
 package com.sharib.BMS.entity;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,19 +9,20 @@ import java.time.LocalDateTime;
 @Table(name = "screens")
 @Getter
 @Setter
-@NoArgsConstructor @AllArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class Screen {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
-    @Column(nullable = false )
-    private  String name;
+    @Column(nullable = false)
+    private String name;
 
     private Integer totalSeats;
 
     @ManyToOne
-    @JoinColumn(name = "theatre_id" , nullable = false)
+    @JoinColumn(name = "theatre_id", nullable = false)
     private Theatre theatre;
 }

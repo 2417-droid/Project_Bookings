@@ -30,112 +30,77 @@ export default function RegisterPage() {
   };
 
   return (
-    <div style={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      minHeight: 'calc(100vh - 60px)',
-      padding: '2rem'
-    }}>
-      <div style={{
-        background: 'var(--bg-card)',
-        padding: '3rem',
-        borderRadius: 'var(--radius)',
-        border: '1px solid rgba(255,255,255,0.1)',
-        width: '100%',
-        maxWidth: '400px'
-      }}>
-        <h2 style={{ textAlign: 'center', marginBottom: '2rem' }}>Register</h2>
-        <form onSubmit={handleRegister}>
-          <div style={{ marginBottom: '1.5rem' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem' }}>Name</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="John Doe"
-              style={{
-                width: '100%',
-                padding: '0.8rem',
-                borderRadius: '8px',
-                border: '1px solid rgba(255,255,255,0.1)',
-                background: 'rgba(255,255,255,0.05)',
-                color: 'var(--text)',
-                fontSize: '1rem'
-              }}
-            />
-          </div>
+    <div className="auth-split-layout">
+      <div className="auth-split-image">
+        <img src="/auth-bg.png" alt="Cinema Background" />
+        <div className="auth-split-image-overlay">
+          <h2>Join the Club.</h2>
+          <p>Create an account to book tickets, save your favorite theaters, and unlock exclusive rewards.</p>
+        </div>
+      </div>
 
-          <div style={{ marginBottom: '1.5rem' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem' }}>Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              style={{
-                width: '100%',
-                padding: '0.8rem',
-                borderRadius: '8px',
-                border: '1px solid rgba(255,255,255,0.1)',
-                background: 'rgba(255,255,255,0.05)',
-                color: 'var(--text)',
-                fontSize: '1rem'
-              }}
-            />
-          </div>
+      <div className="auth-form-container">
+        <div className="auth-glass-panel">
+          <h2 className="auth-title">Register</h2>
+          <p className="auth-subtitle">Create a new account</p>
+          
+          <form onSubmit={handleRegister}>
+            <div className="auth-input-wrapper">
+              <label>Full Name</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="John Doe"
+                required
+              />
+            </div>
 
-          <div style={{ marginBottom: '1.5rem' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem' }}>Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              style={{
-                width: '100%',
-                padding: '0.8rem',
-                borderRadius: '8px',
-                border: '1px solid rgba(255,255,255,0.1)',
-                background: 'rgba(255,255,255,0.05)',
-                color: 'var(--text)',
-                fontSize: '1rem'
-              }}
-            />
-          </div>
+            <div className="auth-input-wrapper">
+              <label>Email Address</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                required
+              />
+            </div>
 
-          <div style={{ marginBottom: '2rem' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem' }}>Phone (Optional)</label>
-            <input
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="+91 98765 43210"
-              style={{
-                width: '100%',
-                padding: '0.8rem',
-                borderRadius: '8px',
-                border: '1px solid rgba(255,255,255,0.1)',
-                background: 'rgba(255,255,255,0.05)',
-                color: 'var(--text)',
-                fontSize: '1rem'
-              }}
-            />
-          </div>
+            <div className="auth-input-wrapper">
+              <label>Password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+              />
+            </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="btn btn-primary"
-            style={{ width: '100%' }}
-          >
-            {loading ? 'Registering...' : 'Register'}
-          </button>
-        </form>
+            <div className="auth-input-wrapper">
+              <label>Phone (Optional)</label>
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="+91 98765 43210"
+              />
+            </div>
 
-        <p style={{ textAlign: 'center', marginTop: '1rem', color: 'var(--text-muted)' }}>
-          Already have an account? <Link to="/login" style={{ color: 'var(--primary)' }}>Login</Link>
-        </p>
+            <button
+              type="submit"
+              disabled={loading}
+              className="auth-btn"
+            >
+              {loading ? 'Registering...' : 'Create Account'}
+            </button>
+          </form>
+
+          <p className="auth-footer">
+            Already have an account? <Link to="/login">Login here</Link>
+          </p>
+        </div>
       </div>
     </div>
   );

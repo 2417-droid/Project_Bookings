@@ -1,6 +1,5 @@
 package com.sharib.BMS.entity;
 
-
 import com.sharib.BMS.enums.BookingStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,22 +18,18 @@ public class Booking {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id" , nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "show_id" , nullable = false)
+    @JoinColumn(name = "show_id", nullable = false)
     private Show show;
 
     @ManyToMany
-    @JoinTable(
-            name = "booking_seats",
-            joinColumns=@JoinColumn(name = "booking_id"),
-            inverseJoinColumns = @JoinColumn(name = "seat_id")
-    )
+    @JoinTable(name = "booking_seats", joinColumns = @JoinColumn(name = "booking_id"), inverseJoinColumns = @JoinColumn(name = "seat_id"))
     private List<Seat> seats;
     private Double totalPrice;
 
@@ -44,12 +39,10 @@ public class Booking {
     private LocalDateTime bookedAt;
 
     @PrePersist
-    protected void onCreate()
-    {
-        this.bookedAt=LocalDateTime.now();
-        if(this.status==null)
-        {
-            this.status=BookingStatus.CONFIRMED;
+    protected void onCreate() {
+        this.bookedAt = LocalDateTime.now();
+        if (this.status == null) {
+            this.status = BookingStatus.CONFIRMED;
         }
     }
 }

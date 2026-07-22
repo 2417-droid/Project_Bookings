@@ -4,6 +4,28 @@ const configuredBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim();
 const API_BASE = configuredBaseUrl ? configuredBaseUrl.replace(/\/+$/, '') : '/api';
 const http = axios.create({ baseURL: API_BASE });
 
+// Add a request interceptor to attach the JWT token
+http.interceptors.request.use(
+  (config) => {
+    const userString = localStorage.getItem('user');
+    if (userString) {
+      try {
+        const user = JSON.parse(userString);
+        const token = user?.accessToken || user?.token || (typeof user === 'string' ? user : null);
+        if (token) {
+          config.headers['Authorization'] = `Bearer ${token}`;
+        }
+      } catch (e) {
+        console.error('Error parsing user from localStorage', e);
+      }
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 // Helper functions
 const apiGet = (endpoint) => http.get(endpoint).then(res => res.data);
 const apiPost = (endpoint, data) => http.post(endpoint, data).then(res => res.data);
@@ -73,7 +95,7 @@ export const BookingAPI = {
 
 // User APIs
 export const UserAPI = {
-    register: (data) => apiPost('/users/register', data),
-    login: (data) => apiPost('/users/login', data),
+    register: (data) => apiPost('/auth/register', data),
+    login: (data) => apiPost('/auth/login', data),
     getById: (id) => apiGet(`/users/${id}`)
 };

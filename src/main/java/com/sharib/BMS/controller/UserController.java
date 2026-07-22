@@ -17,25 +17,25 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
     @PostMapping("/register")
-    private ResponseEntity<User> register(@RequestBody UserRequest request)
+    public ResponseEntity<User> register(@RequestBody UserRequest request)
     {
         return  ResponseEntity.ok(userService.register(request));
     }
 
     @PostMapping("/login")
-    private ResponseEntity<User> login(@RequestBody LoginRequest request)
+    public ResponseEntity<User> login(@RequestBody LoginRequest request)
     {
         return  ResponseEntity.ok(userService.login(request));
     }
 
     @GetMapping
-    private ResponseEntity<List<User>> getAllUsers()
+    public ResponseEntity<List<User>> getAllUsers()
     {
         return  ResponseEntity.ok(userService.getAllUsers());
     }
 
     @GetMapping("/{id}")
-    private ResponseEntity<User> getUserById(@PathVariable Long id) {
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUserById(id));
     }
 }
