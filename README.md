@@ -1,230 +1,286 @@
-# VibeCheck 
+# VibeCheck 🎬
 
-A full-stack movie booking application built with Spring Boot (backend), MySQL (database), and React + Vite (frontend).
+A full-stack movie ticket booking platform built with **Spring Boot** (backend), **PostgreSQL** (database), and **React + Vite** (frontend). Features JWT-secured authentication, transactional seat booking with conflict detection, and an admin dashboard for managing all domain entities.
+
+🔗 **Live Demo**: [vibecheck-puce.vercel.app](https://vibecheck-puce.vercel.app)  
+🔗 **Backend API**: [project-bookings.onrender.com](https://project-bookings.onrender.com)
 
 ## Features
 
-- User registration and login
-- Browse movies and movie details
-- Browse cities, theatres, screens, and shows
-- View available seats for a show
-- Book seats and view booking history
-- Cancel existing bookings
-- Admin page for management flows
+### User-Facing
+- Register and log in with secure JWT authentication (access + refresh tokens)
+- Browse movies by title, genre, or language
+- View theatres, screens, and showtimes by city
+- Select seats with real-time availability and book tickets
+- View booking history and cancel existing bookings
+
+### Admin
+- Full CRUD operations for movies, cities, theatres, screens, seats, and shows
+- Manage all entities from a unified admin dashboard
 
 ## Tech Stack
 
 ### Backend
-
-- Java (as configured in `pom.xml`)
-- Spring Boot `4.0.4`
-- Spring Web MVC
-- Spring Data JPA
-- MySQL
-- Maven Wrapper (`mvnw`, `mvnw.cmd`)
+- **Java 17** — Spring Boot `4.0.4`
+- **Spring Web MVC** — RESTful API layer
+- **Spring Data JPA** — ORM with Hibernate and PostgreSQL dialect
+- **Spring Security** — Stateless authentication with JWT filter chain
+- **jjwt `0.12.5`** — Access/refresh token generation, validation, and parsing
+- **PostgreSQL** — Hosted on Supabase (production)
+- **Lombok** — Boilerplate reduction
+- **Maven Wrapper** — Reproducible builds (`mvnw`, `mvnw.cmd`)
 
 ### Frontend
+- **React `19`** — Component-based UI
+- **Vite `8`** — Dev server with API proxy
+- **React Router DOM `7`** — Client-side routing
+- **Axios** — HTTP client with JWT interceptor
+- **ESLint** — Code quality
 
-- React `19`
-- Vite `8`
-- React Router DOM `7`
-- Axios
-- ESLint
+### DevOps
+- **Docker** — Multi-stage build with non-root runtime user
+- **Vercel** — Frontend deployment with SPA rewrites
+- **Render** — Backend container deployment (JVM tuned for 512 MB RAM)
 
 ## Project Structure
 
 ```text
 BMS/
 ├── src/main/java/com/sharib/BMS/
-│   ├── config/
-│   ├── controller/
-│   ├── dto/
-│   ├── entity/
-│   ├── enums/
-│   ├── exception/
-│   ├── repository/
-│   └── service/
+│   ├── config/              # SecurityConfig, CorsConfig
+│   ├── controller/          # 9 REST controllers (Auth, Movie, Booking, etc.)
+│   ├── dto/                 # Request DTOs (BookingRequest, LoginRequest, etc.)
+│   ├── entity/              # 8 JPA entities (Movie, Show, Seat, Booking, etc.)
+│   ├── enums/               # BookingStatus, SeatType
+│   ├── exception/           # GlobalExceptionHandler
+│   ├── repository/          # Spring Data JPA repositories with custom JPQL
+│   ├── security/            # JwtUtils, JwtAuthenticationFilter, CustomUserDetailsService
+│   └── service/             # Business logic layer
 ├── src/main/resources/
 │   ├── application.properties
-│   └── Velvet.sql
+│   └── Velvet.sql           # Seed data
 ├── frontend/
 │   ├── src/
-│   │   ├── pages/
-│   │   └── api.js
+│   │   ├── pages/           # 7 page components
+│   │   ├── api.js           # Axios client with JWT interceptor
+│   │   └── App.jsx          # Root component with routing
+│   ├── vercel.json          # Vercel SPA rewrite rules
 │   └── package.json
+├── Dockerfile               # Multi-stage production build
 ├── pom.xml
 └── README.md
 ```
 
 ## Prerequisites
 
-- Java (matching your `pom.xml` setting)
-- Maven (optional, wrapper included)
-- Node.js and npm
-- MySQL running locally or remotely
+- Java 17+
+- Maven (optional — wrapper included)
+- Node.js 18+ and npm
+- PostgreSQL instance (local or remote)
 
 ## Environment Configuration
 
-The backend reads environment variables with local fallbacks from `src/main/resources/application.properties`.
+### Backend
 
-### Backend environment variables
+The backend reads environment variables with local fallbacks defined in `src/main/resources/application.properties`.
 
-- `SPRING_DATASOURCE_URL`
-- `SPRING_DATASOURCE_USERNAME`
-- `SPRING_DATASOURCE_PASSWORD`
-- `MYSQLHOST` (fallback path)
-- `MYSQLPORT` (fallback path)
-- `MYSQLDATABASE` (fallback path)
-- `MYSQLUSER` (fallback path)
-- `MYSQLPASSWORD` (fallback path)
-- `PORT` (defaults to `8080`)
+| Variable | Description | Default |
+|---|---|---|
+| `SPRING_DATASOURCE_URL` | JDBC connection string | Supabase PostgreSQL URL |
+| `SPRING_DATASOURCE_USERNAME` | Database username | Supabase default |
+| `SPRING_DATASOURCE_PASSWORD` | Database password | Supabase default |
+| `JWT_SECRET` | HMAC signing key (≥ 32 bytes) | Dev fallback key |
+| `PORT` | Server port | `8080` |
 
-### Frontend environment variables
+### Frontend
 
-- `VITE_DEV_API_TARGET` (defaults to `http://localhost:8080`)
+| Variable | Description | Default |
+|---|---|---|
+| `VITE_API_BASE_URL` | Backend API base URL | `/api` (proxied via Vite) |
+| `VITE_DEV_API_TARGET` | Vite proxy target (dev only) | `http://localhost:8080` |
 
 ## Database Setup
 
-1. Create a MySQL database (for local dev, commonly `vibecheck_db`).
-2. Update connection values if needed via environment variables.
-3. Optional seed data:
-   - Run SQL from `src/main/resources/Velvet.sql`.
-   - If your local DB is not named `railway`, change the `USE railway;` line before running.
+1. Create a PostgreSQL database (or use Supabase free tier).
+2. Set `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, and `SPRING_DATASOURCE_PASSWORD` environment variables.
+3. Hibernate will auto-create tables on startup (`ddl-auto=update`).
+4. **Optional seed data**: Run `src/main/resources/Velvet.sql` against your database. Update the `USE` statement if your database name differs.
 
 ## Run Locally
 
-### 1) Start backend (Spring Boot)
+### 1) Start the backend (Spring Boot)
 
 From the project root:
 
-#### Windows
-
+**Windows:**
 ```powershell
 .\mvnw.cmd spring-boot:run
 ```
 
-#### macOS / Linux
-
+**macOS / Linux:**
 ```bash
 ./mvnw spring-boot:run
 ```
 
-Backend default URL: `http://localhost:8080`
+Backend runs at: `http://localhost:8080`
 
-### 2) Start frontend (React + Vite)
+### 2) Start the frontend (React + Vite)
 
-From `frontend/`:
+From the `frontend/` directory:
 
 ```bash
 npm install
 npm run dev
 ```
 
-Frontend default URL: `http://localhost:5173`
+Frontend runs at: `http://localhost:5173`
 
-The Vite dev server proxies `/api` requests to the backend target.
+The Vite dev server proxies `/api` requests to the backend automatically.
+
+## Docker
+
+Build and run the containerized backend:
+
+```bash
+# Build
+docker build -t vibecheck .
+
+# Run
+docker run -p 8080:8080 \
+  -e SPRING_DATASOURCE_URL=<your-jdbc-url> \
+  -e SPRING_DATASOURCE_USERNAME=<your-username> \
+  -e SPRING_DATASOURCE_PASSWORD=<your-password> \
+  -e JWT_SECRET=<your-secret-key> \
+  vibecheck
+```
+
+The Dockerfile uses a multi-stage build (build on `eclipse-temurin:21-jdk-alpine`, run on `eclipse-temurin:21-jre-alpine`) with a non-root user and G1GC tuning for memory-constrained environments.
+
+## API Reference
+
+Base URL: `http://localhost:8080`
+
+### Authentication
+
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| `POST` | `/api/auth/register` | Public | Register a new user |
+| `POST` | `/api/auth/login` | Public | Login and receive JWT tokens |
+| `POST` | `/api/auth/refresh` | Cookie | Refresh access token |
+| `POST` | `/api/auth/logout` | Public | Clear refresh token cookie |
+
+### Movies
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/api/movies` | Add a movie |
+| `GET` | `/api/movies` | List all movies |
+| `GET` | `/api/movies/{id}` | Get movie by ID |
+| `GET` | `/api/movies/search?title=...` | Search by title |
+| `GET` | `/api/movies/genre/{genre}` | Filter by genre |
+| `GET` | `/api/movies/language/{language}` | Filter by language |
+| `PUT` | `/api/movies/{id}` | Update a movie |
+| `DELETE` | `/api/movies/{id}` | Delete a movie |
+
+### Cities
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/api/cities` | Add a city |
+| `GET` | `/api/cities` | List all cities |
+| `GET` | `/api/cities/{id}` | Get city by ID |
+
+### Theatres
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/api/theatres/addTheatre` | Add a theatre |
+| `GET` | `/api/theatres` | List all theatres |
+| `GET` | `/api/theatres/{id}` | Get theatre by ID |
+| `GET` | `/api/theatres/city/{cityId}` | Get theatres by city |
+
+### Screens
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/api/screens/addScreen` | Add a screen |
+| `GET` | `/api/screens` | List all screens |
+| `GET` | `/api/screens/{id}` | Get screen by ID |
+| `GET` | `/api/screens/theatre/{theatreId}` | Get screens by theatre |
+
+### Seats
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/api/seats/addSeat` | Add a seat |
+| `GET` | `/api/seats/screen/{screenId}` | Get seats by screen |
+| `GET` | `/api/seats/{id}` | Get seat by ID |
+
+### Shows
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/api/shows/addShow` | Add a show |
+| `GET` | `/api/shows` | List all shows |
+| `GET` | `/api/shows/{id}` | Get show by ID |
+| `GET` | `/api/shows/movie/{movieId}` | Get shows by movie |
+| `GET` | `/api/shows/movie/{movieId}/date?date=YYYY-MM-DD` | Filter by movie and date |
+
+### Bookings
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/api/bookings` | Create a booking |
+| `GET` | `/api/bookings/{id}` | Get booking by ID |
+| `GET` | `/api/bookings/user/{userId}` | Get bookings by user |
+| `PUT` | `/api/bookings/{id}/cancel` | Cancel a booking |
+| `GET` | `/api/bookings/show/{showId}/available-seats` | Get available seats for a show |
+
+### Users
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/users` | List all users |
+| `GET` | `/api/users/{id}` | Get user by ID |
+
+## Authentication Flow
+
+1. **Register** — `POST /api/auth/register` with `name`, `email`, `password`. Password is hashed with BCrypt.
+2. **Login** — `POST /api/auth/login` returns a short-lived **access token** (15 min) in the response body and sets a long-lived **refresh token** (7 days) as an HTTP-only secure cookie.
+3. **Authenticated requests** — The frontend Axios interceptor reads the access token from `localStorage` and attaches it as a `Bearer` token in the `Authorization` header.
+4. **Token refresh** — `POST /api/auth/refresh` reads the refresh cookie and returns a new access token.
+5. **Logout** — `POST /api/auth/logout` clears the refresh token cookie.
+
+All endpoints except `/api/auth/**` require a valid JWT.
 
 ## Build Commands
 
 ### Backend
 
 ```bash
-# from project root
-./mvnw clean package
+./mvnw clean package        # Build JAR (from project root)
+./mvnw test                 # Run tests
 ```
 
 ### Frontend
 
 ```bash
-# from frontend/
-npm run build
-npm run preview
+cd frontend
+npm run build               # Production build
+npm run preview             # Preview production build
+npm run lint                # Lint check
 ```
 
-## API Overview
+## Deployment
 
-Base URL (local): `http://localhost:8080`
+| Component | Platform | URL |
+|---|---|---|
+| Frontend | Vercel | [vibecheck-puce.vercel.app](https://vibecheck-puce.vercel.app) |
+| Backend | Render | [project-bookings.onrender.com](https://project-bookings.onrender.com) |
+| Database | Supabase | PostgreSQL with connection pooling via Supavisor |
 
-### Users
-
-- `POST /api/users/register`
-- `POST /api/users/login`
-- `GET /api/users`
-- `GET /api/users/{id}`
-
-### Movies
-
-- `POST /api/movies`
-- `GET /api/movies`
-- `GET /api/movies/{id}`
-- `GET /api/movies/search?title=...`
-- `GET /api/movies/genre/{genre}`
-- `GET /api/movies/language/{language}`
-- `PUT /api/movies/{id}`
-- `DELETE /api/movies/{id}`
-
-### Cities
-
-- `POST /api/cities`
-- `GET /api/cities`
-- `GET /api/cities/{id}`
-
-### Theatres
-
-- `POST /api/theatres/addTheatre`
-- `GET /api/theatres`
-- `GET /api/theatres/{id}`
-- `GET /api/theatres/city/{cityId}`
-
-### Screens
-
-- `POST /api/screens/addScreen`
-- `GET /api/screens`
-- `GET /api/screens/{id}`
-- `GET /api/screens/theatre/{theatreId}`
-
-### Seats
-
-- `POST /api/seats/addSeat`
-- `GET /api/seats/screen/{screenId}`
-- `GET /api/seats/{id}`
-
-### Shows
-
-- `POST /api/shows/addShow`
-- `GET /api/shows`
-- `GET /api/shows/{id}`
-- `GET /api/shows/movie/{movieId}`
-- `GET /api/shows/movie/{movieId}/date?date=YYYY-MM-DD`
-
-### Bookings
-
-- `POST /api/bookings`
-- `GET /api/bookings/{id}`
-- `GET /api/bookings/user/{userId}`
-- `PUT /api/bookings/{id}/cancel`
-- `GET /api/bookings/show/{showId}/available-seats`
-
-## Test
-
-From project root:
-
-```bash
-./mvnw test
-```
-
-## Deployment Notes
-
-- Backend port is controlled by `PORT` (important for cloud platforms).
-- Use `SPRING_DATASOURCE_*` variables for production deployments.
-- Frontend can be deployed separately (for example Vercel), and backend as a Spring Boot service.
-
-## Current Authentication Model
-
-- Login/register flow is API-based.
-- Frontend stores auth/user context locally.
-- No JWT/session security is currently enabled.
+> **Note**: The Render free tier spins down after inactivity. The first request may take ~30 seconds to cold-start.
 
 ## License
 
-No license has been defined yet.
+This project is unlicensed.
